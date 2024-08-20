@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="col-6">
+        <div class="card">
+          <div class="card-body">
+              <h2 class="card-title">来源条形图</h2>
+            <div id="chart-demo-bar" class="chart-lg"></div>
+          </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="card">
+          <div class="card-body">
+              <h2 class="card-title">日期折线图</h2>
+            <div id="chart-demo-line" class="chart-lg"></div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-6">
+        <div class="card">
+          <div class="card-body">
+{#               <h3 class="card-title">词条</h3>#}
+              <div id="word-clouds" class="chart-lg"></div>
+          </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-6">
+        <div class="card">
+          <div class="card-body">
+               <h3 class="card-title">来源饼图</h3>
+              <div id="pie-chart" class="chart-lg"></div>
+          </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    window.ApexCharts && (new ApexCharts(document.getElementById('chart-demo-line'), {
+      chart: {
+        type: "line",
+        fontFamily: 'inherit',
+        height: 240,
+        parentHeightOffset: 0,
+        toolbar: {
+          show: false,
+        },
+        animations: {
+          enabled: false
+        },
+      },
+      fill: {
+        opacity: 1,
+      },
+      stroke: {
+        width: 2,
+        lineCap: "round",
+        curve: "straight",
+      },
+      series: [{'data': [{% if context.get("line") %}
+              {% set a = ',' %}
+                  {% for datas in context.get("line").get("series") %}
+                        {{ datas | tojson }}{{ a }}
+                  {% endfor %}
+              {% endif %}]}],
+      tooltip: {
+        theme: 'dark'
+      },
+      grid: {
+        padding: {
+          top: -20,
+          right: 0,
+          left: -4,
+          bottom: -4
+        },
+        strokeDashArray: 4,
+      },
+      xaxis: {
+          type: 'category',
+        labels: {
+          padding: 0,
+
+        },
+        tooltip: {
+          enabled: false
+        },
+        categories:[{% if context.get("line") %}
+                    {% set a = ',' %}
+                  {% for datas in context.get("line").get("labels") %}
+                        "{{ datas  }}"{{ a }}
+                  {% endfor %}
+                {% endif %}],
+      },
+      yaxis: {
+          title:{
+              text: '数量'
+          },
+        labels: {
+          padding: 24
+        },
+      },
+      colors: [tabler.getColor("yellow"), tabler.getColor("green"), tabler.getColor("primary")],
+      legend: {
+        show: true,
+        position: 'bottom',
+        offsetY: 12,
+        markers: {
+          width: 10,
+          height: 10,
+          radius: 100,
+        },
+        itemMargin: {
+          horizontal: 8,
+          vertical: 8
+        },
+      },
+    })).render();
+  });
+</script>
+    <script>
+      // @formatter:off
+      document.addEventListener("DOMContentLoaded", function () {
+      	window.ApexCharts && (new ApexCharts(document.getElementById('chart-demo-bar'), {
+      		chart: {
+      			type: "bar",
+      			fontFamily: 'inherit',
+      			height: 240,
+      			parentHeightOffset: 0,
+      			toolbar: {
+      				show: false,
+      			},
+      			animations: {
+      				enabled: false
+      			},
+      			{#stacked: true,#}
+      		},
+      		plotOptions: {
+      			bar: {
+      				columnWidth: '50%',
+      			}
+      		},
+      		dataLabels: {
+      			enabled: false,
+      		},
+      		fill: {
+      			opacity: 1,
+      		},
+      		series: [{'data': [{% if context.get('bar') %}
+                        {% set a = ',' %}
+                      {% for datas in context.get('bar').get("series") %}
+                          {{ datas | tojson}}{{ a }}
+                        {% endfor %}
+                    {% endif %}]}],
+      		tooltip: {
+      			theme: 'dark'
+      		},
+      		grid: {
+      			padding: {
+      				top: -20,
+      				right: 0,
+      				left: -4,
+      				bottom: -4
+      			},
+      			strokeDashArray: 4,
+      			xaxis: {
+      				lines: {
+      					show: true
+      				}
+      			},
+      		},
+      		xaxis: {
+      			labels: {
+      				padding: 0,
+      			},
+      			tooltip: {
+      				enabled: false
+      			},
+      			axisBorder: {
+      				show: false,
+      			},
+      			{#type: 'datetime',#}
+      		},
+      		yaxis: {
+                title:{
+                     text: '数量'
+                  },
+      			labels: {
+      				padding: 4
+      			},
+      		},
+      		labels: [{% if context.get('bar') %}
+                    {% set a = ',' %}
+                      {% for datas in context.get('bar').get("labels") %}
+                          {{ datas | tojson}}{{ a }}
+                      {% endfor %}
+                    {% endif %}],
+      		colors: [tabler.getColor("primary"), tabler.getColor("green", 0.8)],
+      		legend: {
+                show: true,
+                position: 'bottom',
+                offsetY: 12,
+                markers: {
+                  width: 10,
+                  height: 10,
+                  radius: 100,
+                },
+                itemMargin: {
+                  horizontal: 8,
+                  vertical: 8
+                },
+              },
+      	})).render();
+      });
+      // @formatter:on
+    </script>
+    <script>
+    // 基于准备好的dom，初始化echarts实例
+    var chart = echarts.init(document.getElementById('word-clouds'));
+    var option = {
+      title: {
+          text: '新闻热词'
+      },
+      tooltip: {},
+      series: [{
+        type: 'wordCloud',
+        gridSize: 2,
+        sizeRange: [12, 50],
+        // rotationRange: [-90, 90],
+        rotationRange: [-50, 50],
+        shape: 'triangle',
+        // width: 100,
+        // height: 400,
+        textStyle: {
+
+            color: function () {
+              return 'rgb(' + [
+                Math.round(Math.random() * 160),
+                Math.round(Math.random() * 160),
+                Math.round(Math.random() * 160)
+              ].join(',') + ')';
+            },
+
+          emphasis: {
+            shadowBlur: 10,
+            shadowColor: '#333'
+          }
+        },
+        data: [{% if context.get("word_clouds") %}
+                    {% set a = ',' %}
+                  {% for datas in context.get("word_clouds") %}
+                        {{ datas|tojson  }}{{ a }}
+                  {% endfor %}
+                {% endif %}],
+      }]}
+    chart.setOption(option)
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            window.ApexCharts && (new ApexCharts(document.getElementById('pie-chart'), {
+              series: [{% if context.get('bar') %}
+                        {% set a = ',' %}
+                      {% for datas in context.get('bar').get("series") %}
+                          {{ datas | tojson}}{{ a }}
+                        {% endfor %}
+                    {% endif %}],
+              chart: {
+              width: 380,
+              type: 'pie',
+            },
+            labels: [{% if context.get('bar') %}
+                    {% set a = ',' %}
+                      {% for datas in context.get('bar').get("labels") %}
+                          {{ datas | tojson}}{{ a }}
+                      {% endfor %}
+                    {% endif %}],
+            responsive: [{
+              breakpoint: 480,
+              options: {
+                chart: {
+                  width: 200
+                },
+                legend: {
+                  position: 'bottom'
+                }
+              }
+            }]
+            })).render();})
+    </script>
+
+{% endblock %}

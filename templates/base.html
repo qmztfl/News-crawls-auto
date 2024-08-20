@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link href="/static/dist/css/tabler.min.css" rel="stylesheet"/>
+    <link href="/static/dist/css/demo.min.css" rel="stylesheet"/>
+    <link href="/static/dist/css/layui.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="page">
+    <aside class="navbar navbar-vertical navbar-expand-sm">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+<!--      <h1 class="navbar-brand navbar-brand-autodark">-->
+<!--&lt;!&ndash;        <a href="/">&ndash;&gt;-->
+<!--&lt;!&ndash;          <img src="..." width="110" height="32" alt="Tabler" class="navbar-brand-image">&ndash;&gt;-->
+<!--&lt;!&ndash;        </a>&ndash;&gt;-->
+<!--      </h1>-->
+      <div class="collapse navbar-collapse" id="sidebar-menu">
+        <ul class="navbar-nav pt-lg-4">
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <span class="nav-link-title">
+                首页
+              </span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href=/activity>
+              <span class="nav-link-title">
+                国内
+              </span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/family">
+              <span class="nav-link-title">
+                国际
+              </span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/other">
+              <span class="nav-link-title">
+                军事
+              </span>
+            </a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link" href="/cs">
+              <span class="nav-link-title">
+                航空
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+    <div class="page-wrapper">
+        <div class="page-header d-print-none">
+              <div class="container-xl">
+                    <div class="row g-3 align-items-center">
+                        {% block content %}{% endblock %}
+                    </div>
+              </div>
+        </div>
+    </div>
+</div>
+    <script src="/static/dist/libs/apexcharts/dist/echarts.js"></script>
+    <script src="/static/dist/libs/apexcharts/dist/apexcharts.js"></script>
+    <script src="/static/dist/libs/jsvectormap/dist/js/jsvectormap.min.js" ></script>
+    <script src="/static/dist/libs/jsvectormap/dist/maps/world.js" ></script>
+    <script src="/static/dist/libs/jsvectormap/dist/maps/world-merc.js" ></script>
+<script src="/static/dist/js/tabler.min.js" ></script>
+<script src=  "/static/dist/js/demo.min.js" ></script>
+
+<script type="text/javascript" src="/static/dist/js/china.js"></script>
+<script src="/static/dist/js/echarts-wordcloud.js" ></script>
+<script src="/static/dist/js/layui.js" ></script>
+{% block js %}{% endblock %}
+</body>
+</html>
